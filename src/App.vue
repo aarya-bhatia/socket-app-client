@@ -1,74 +1,84 @@
 <template>
   <div id="app">
-    <input type="text" placeholder="name" v-model="user" />
+    <div v-if="!isConnected">Connecting To Server...</div>
 
     <div v-if="!joinedRoom">
-      <input type="text" placeholder="room id" v-model="roomName">
-      <button @click="joinRoom">Join Room</button>
+      <form @submit.prevent="joinRoom">
+        <label>Enter Room Name</label>
+        <input type="text" placeholder="room id" v-model="roomName" />
+        <br />
+        <label>Enter User Name</label>
+        <input type="text" v-model="user" />
+        <button type="submit">OK</button>
+      </form>
     </div>
+
     <div v-else>
       <button @click="leaveRoom">Leave Room</button>
 
       <form @submit.prevent="sendMessage">
-        <input type="text" placeholder="type here..." v-model="content" />
+        <label>Type Message...</label>
+        <input type="text" v-model="content" />
+        <button type="submit">Send</button>
       </form>
 
+      <!-- chat messages -->
       <div v-for="(message, i) in messages" :key="i">{{ message.user }} -> {{ message.content }}</div>
     </div>
-
-    <div>{{ message }}</div>
   </div>
 </template>
 
 <script>
+import store from "./store";
+import { mapGetters, mapActions, mapState } from "vuex";
+
 export default {
   name: "App",
   data() {
     return {
       user: "",
-      joinedRoom: false,
-      roomName: "HomeRoom",
-      message: "",
+      roomName: "",
       content: "",
-      messages: [],
     };
   },
-  sockets: {
-    connect() {
-      console.log("socket connected");
-    },
-    USER_JOINED(user) {
-      this.message = user + " joined room " + this.roomName + '!';
-      this.joinedRoom = true;
-    },
-    USER_LEFT(user) {
-      this.message = user + " left room " + this.roomName + '!';
-      this.joinedRoom = false;
-    },
-    NEW_MESSAGE({ user, content }) {
-      this.message = user + " sent a message!"
-      this.messages.push({ user, content })
-    }
+
+  computed: {
+    ...mapGetters(["isConnected", "joinedRoom", "messages"]),
   },
+
   methods: {
+    ...mapActions(["JOIN_ROOM", "LEAVE_ROOM"]),
+
     joinRoom() {
+      console.log("joining room...");
       this.$socket.emit("subscribe", {
         room: this.roomName,
         user: this.user,
       });
-    },
-    leaveRoom() {
-      this.$socket.emit("unsubscribe", {
-        room: this.roomName,
+
+      this.JOIN_ROOM({
+        roomName: this.roomName,
         user: this.user,
       });
     },
-    sendMessage() {
+
+    leaveRoom(state) {
+      this.$socket.emit("unsubscribe", {
+        room: store.state.roomName,
+        user: store.state.user,
+      });
+
+      this.LEAVE_ROOM();
+    },
+
+    async sendMessage() {
       this.$socket.emit("new message", {
-        room: this.roomName,
-        user: this.user,
+        room: store.state.roomName,
+        user: store.state.user,
         content: this.content,
       });
+
+      this.content = "";
     },
   },
 };

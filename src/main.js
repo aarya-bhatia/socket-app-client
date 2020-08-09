@@ -6,12 +6,16 @@ import socketio from 'socket.io-client'
 
 Vue.config.productionTip = false
 
-const SocketInstance = socketio.connect('http://localhost:3000/chats');
+const SocketInstance = socketio.connect('http://localhost:3000/chats', { reconnection: false });
 
 Vue.use(new VueSocketio({
   debug: true,
   connection: SocketInstance,
-  store
+  vuex: {
+    store,
+    actionPrefix: 'SOCKET_',
+    mutationPrefix: 'SOCKET_'
+  }
 }));
 
 new Vue({
