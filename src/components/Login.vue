@@ -30,10 +30,19 @@
 </template>
 
 <script>
-import store from "../store";
+import store from "@/store";
+import router from "@/router";
 
 export default {
   name: "Login",
+
+  created() {
+    if(sessionStorage.getItem('user')) {
+      const user = JSON.parse(sessionStorage.getItem('user'))
+      this.username = user.username
+      this.password = user.password
+    }
+  },
 
   data() {
     return {
@@ -62,11 +71,13 @@ export default {
         this.fetching = true;
         const user = await store.dispatch("Auth/LOGIN", {
           username: this.username,
-          password: this.password
+          password: this.password,
         });
-        await store.dispatch("Room/SET_USER", user.username)
+        await store.dispatch("Room/SET_USER", user.username);
         await store.dispatch("Room/FETCH_ROOM_DATA", user.rooms);
         this.fetching = false;
+
+        router.push({ name: "ListRooms" });
       } catch (err) {
         this.feedback = err.message;
       }

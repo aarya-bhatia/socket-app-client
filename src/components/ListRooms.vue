@@ -8,6 +8,7 @@
 
 <script>
 import store from "@/store";
+import router from "@/router";
 
 export default {
   name: "ListRooms",
@@ -35,7 +36,7 @@ export default {
         user: this.user,
       });
 
-      this.$emit('chat');
+      router.push({ name: 'Chat' })
     },
   },
 };

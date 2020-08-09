@@ -3,6 +3,8 @@ import App from './App.vue'
 import store from './store'
 import VueSocketio from 'vue-socket.io'
 import socketio from 'socket.io-client'
+import router from './router'
+import VueChatScroll from 'vue-chat-scroll'
 
 Vue.config.productionTip = false
 
@@ -18,7 +20,10 @@ Vue.use(new VueSocketio({
   }
 }));
 
+Vue.use(VueChatScroll)
+
 new Vue({
   store,
+  router,
   render: h => h(App)
 }).$mount('#app')

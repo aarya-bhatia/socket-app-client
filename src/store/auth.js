@@ -24,10 +24,12 @@ export default {
     mutations: {
         LOGIN(state, user) {
             state.user = user
+            sessionStorage.setItem('user', JSON.stringify(user))
         },
 
         LOGOUT(state) {
             state.user = null;
+            sessionStorage.removeItem('user')
         },
 
         ADD_ROOM(state, room_id) {
@@ -57,6 +59,10 @@ export default {
                         reject(err.response.data)
                     })
             })
+        },
+
+        LOGOUT({ commit }) {
+            commit('LOGOUT')
         }
     }
 }

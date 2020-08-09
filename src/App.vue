@@ -1,50 +1,45 @@
 <template>
   <div id="app">
+    <Navbar />
     <div v-if="!isConnected">Connecting To Server...</div>
-    <div v-if="!isLoggedIn">
-      <Login />
-    </div>
-    <div v-else>
-      <ListRooms v-if="!joinedRoom" />
-      <Chat v-else />
-    </div>
+    <router-view/>
   </div>
 </template>
 
 <script>
-import store from "@/store";
-import Login from '@/components/Login';
-import ListRooms from '@/components/ListRooms';
-import Chat from '@/components/Chat';
+import store from '@/store'
+import Navbar from '@/components/Navbar'
 
 export default {
-  name: "App",
+  name: 'App',
+  components: { Navbar },
   computed: {
     isConnected() {
       return store.getters.isConnected;
-    },
-    isLoggedIn() {
-      return store.getters["Auth/isLoggedIn"];
-    },
-    joinedRoom() {
-      return store.getters["Room/joinedRoom"];
     }
-  },
-  components: {
-    Login,
-    ListRooms,
-    Chat
   }
-};
+}
 </script>
 
 <style>
-.app {
+#app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
 }
 </style>

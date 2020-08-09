@@ -59,6 +59,10 @@ export default {
 
         SET_USER(state, user) {
             state.user = user
+        },
+
+        RECIEVE_MESSAGES(state, messages) {
+            state.messages = messages
         }
     },
 
@@ -67,14 +71,14 @@ export default {
             commit('SET_USER', user)
         },
 
-        SOCKET_USER_JOINED({ state, commit }, user) {
+        SOCKET_USER_JOINED({ commit }, user) {
             commit('NEW_MESSAGE', {
                 user: 'server',
                 content: `${user} has joined room`
             })
         },
 
-        SOCKET_USER_LEFT({ state, commit }, user) {
+        SOCKET_USER_LEFT({ commit }, user) {
             commit('NEW_MESSAGE', {
                 user: 'server',
                 content: `${user} has left room`
@@ -99,6 +103,34 @@ export default {
                 axios.post(rootGetters.api + '/rooms/fetch', { rooms })
                     .then(result => {
                         commit('RECIEVE_ROOM_DATA', result.data)
+                        resolve(result.data)
+                    })
+                    .catch(err => {
+                        reject(err.response.data)
+                    })
+            })
+        },
+
+        FETCH_MESSAGES({ commit, getters, rootGetters }) {
+            return new Promise((resolve, reject) => {
+                
+                console.log(rootGetters.api + '/messages/' + getters.roomName)
+                
+                axios.get(rootGetters.api + '/messages/' + getters.roomName)
+                    .then(result => {
+                        commit('RECIEVE_MESSAGES', result.data)
+                        resolve(result.data)
+                    })
+                    .catch(err => {
+                        reject(err)
+                    })
+            })
+        },
+
+        SEND_MESSAGE({ getters, rootGetters }, message) {
+            return new Promise((resolve, reject) => {
+                axios.post(rootGetters.api + '/messages/' + getters.roomName, message)
+                    .then(result => {
                         resolve(result.data)
                     })
                     .catch(err => {
