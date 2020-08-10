@@ -6,9 +6,11 @@ import Auth from './auth'
 
 Vue.use(Vuex)
 
+//api: 'http://localhost:3000'
+
 export default new Vuex.Store({
   state: {
-    api: 'http://localhost:3000',
+    api: 'https://sleepy-peak-50290.herokuapp.com',
     connected: false
   },
 

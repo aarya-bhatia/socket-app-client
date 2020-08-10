@@ -8,7 +8,7 @@ import VueChatScroll from 'vue-chat-scroll'
 
 Vue.config.productionTip = false
 
-const SocketInstance = socketio.connect('http://localhost:3000/chats', { reconnection: false });
+const SocketInstance = socketio.connect(store.getters.api + '/chats', { reconnection: false });
 
 Vue.use(new VueSocketio({
   debug: true,
