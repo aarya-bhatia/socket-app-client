@@ -35,16 +35,14 @@ export default {
     },
 
     mutations: {
-        JOIN_ROOM(state, { roomName, user }) {
+        JOIN_ROOM(state, roomName) {
             state.roomName = roomName
-            state.user = user
             state.joinedRoom = true
             state.messages = []
         },
 
         LEAVE_ROOM(state) {
             state.roomName = ""
-            state.user = ""
             state.joinedRoom = false
             state.messages = []
         },
@@ -62,7 +60,11 @@ export default {
         },
 
         RECIEVE_MESSAGES(state, messages) {
-            state.messages = messages
+            state.messages = messages.reverse()
+        },
+
+        CREATE_ROOM(state, room) {
+            state.rooms.push(room)
         }
     },
 
@@ -113,9 +115,9 @@ export default {
 
         FETCH_MESSAGES({ commit, getters, rootGetters }) {
             return new Promise((resolve, reject) => {
-                
+
                 console.log(rootGetters.api + '/messages/' + getters.roomName)
-                
+
                 axios.get(rootGetters.api + '/messages/' + getters.roomName)
                     .then(result => {
                         commit('RECIEVE_MESSAGES', result.data)
@@ -137,19 +139,23 @@ export default {
                         reject(err.response.data)
                     })
             })
-        }
+        },
 
-        // CREATE_ROOM({ state, commit }, payload) {
-        //     return new Promise((resolve, reject) => {
-        //         axios.post(state.api + '/rooms/create', payload)
-        //             .then(result => {
-        //                 commit('CREATE_ROOM', result.data)
-        //                 resolve(result.data)
-        //             })
-        //             .catch(err => {
-        //                 reject(err.response.data)
-        //             })
-        //     })
-        // },
+        CREATE_ROOM({ getters, rootGetters, commit }, payload) {
+            return new Promise((resolve, reject) => {
+                if (getters.user.length === 0) {
+                    console.log(getters.user)
+                    reject({ message: "unauthorized" })
+                    return
+                }
+                axios.post(rootGetters.api + '/rooms/create', payload)
+                    .then(result => {
+                        commit('CREATE_ROOM', result.data)
+                        resolve(result.data)
+                    }).catch(err => {
+                        reject(err.response.data)
+                    })
+            })
+        },
     }
 }

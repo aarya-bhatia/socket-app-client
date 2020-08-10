@@ -18,9 +18,9 @@
         </li>
 
         <li>
-          <a href>
+          <router-link :to="{ name: 'Logout' }">
             <i class="material-icons large">exit_to_app</i>
-          </a>
+          </router-link>
         </li>
       </ul>
     </div>
@@ -29,18 +29,6 @@
 
 <script>
 export default {
-  name: "Navbar"
+  name: "Navbar",
 };
 </script>
-
-<style>
-/* .nav-left {
-  margin-left: 5%;
-}
-.nav-right {
-  margin-right: 5%;
-}
-.nav-right a {
-  margin-right: 20px;
-} */
-</style>

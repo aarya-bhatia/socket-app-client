@@ -5,7 +5,7 @@
     </div>
 
     <!-- chat messages -->
-    <h4>Messages</h4>
+    <h4>{{ roomTitle }}</h4>
     <div class="card-panel">
       <div class="collection messages" v-chat-scroll>
         <div class="collection-item" v-for="(message, i) in messages" :key="i">
@@ -47,6 +47,8 @@ export default {
       usersTyping: [],
     };
   },
+
+  props: ["roomTitle"],
 
   async created() {
     await store.dispatch("Room/FETCH_MESSAGES");

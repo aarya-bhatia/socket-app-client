@@ -1,7 +1,8 @@
 <template>
   <div class="app container">
+    <button class="btn" @click="createRoom">New Room</button>
     <div v-for="room in rooms" :key="room._id">
-      <a @click.prevent="joinRoom(room._id)">{{ room.name }}</a>
+      <button class="btn btn-lg" @click="joinRoom(room)">{{ room.name }}</button>
     </div>
   </div>
 </template>
@@ -24,19 +25,21 @@ export default {
   },
 
   methods: {
-    joinRoom(id) {
+    joinRoom(room) {
+      const id = room._id;
       console.log("joining room...");
       this.$socket.emit("subscribe", {
         room: id,
         user: this.user,
       });
 
-      store.dispatch("Room/JOIN_ROOM", {
-        roomName: id,
-        user: this.user,
-      });
+      store.dispatch("Room/JOIN_ROOM", id);
 
-      router.push({ name: 'Chat' })
+      router.push({ name: "Chat", params: { roomTitle: room.name } });
+    },
+
+    createRoom() {
+      router.push({ name: "NewRoom" });
     },
   },
 };

@@ -12,8 +12,12 @@ export default {
             return state.user;
         },
 
+        username(state) {
+            return state.user.username;
+        },
+
         isLoggedIn(state) {
-            if(state.user) {
+            if (state.user) {
                 return true
             } else {
                 return false
@@ -63,6 +67,30 @@ export default {
 
         LOGOUT({ commit }) {
             commit('LOGOUT')
+        },
+
+        SOCKET_NEW_ROOM({ getters, commit }, room) {
+            if (room.members.includes(getters.username)) {
+                commit('ADD_ROOM', room._id)
+            } else {
+                console.log(getters.username + ' is not a member of this room!')
+            }
+        },
+
+        NEW_ROOM({ rootGetters }, data) {
+            return new Promise((resolve, reject) => {
+                axios.post(rootGetters.api + '/users/join', data)
+                    .then(() => {
+                        resolve()
+                    })
+                    .catch(err => {
+                        reject(err.response.data)
+                    })
+            })
+        },
+
+        LEAVE_ROOM({ commit }, data) {
+            commit('LEAVE_ROOM', data)
         }
     }
 }
