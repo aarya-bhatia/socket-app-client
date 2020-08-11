@@ -10,8 +10,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    //api: 'https://sleepy-peak-50290.herokuapp.com',
-    api: 'http://localhost:3000',
+    api: 'https://sleepy-peak-50290.herokuapp.com',
+    //api: 'http://localhost:3000',
     connected: false
   },
 
