@@ -1,24 +1,31 @@
 <template>
   <div id="app">
     <Navbar />
+    <button class="btn brown lighten-3" @click="totalConnections">Get total connections</button>
+    <br />
     <div v-if="!isConnected">Connecting To Server...</div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <script>
-import store from '@/store'
-import Navbar from '@/components/Navbar'
+import store from "@/store";
+import Navbar from "@/components/Navbar";
 
 export default {
-  name: 'App',
+  name: "App",
   components: { Navbar },
   computed: {
     isConnected() {
       return store.getters.isConnected;
-    }
-  }
-}
+    },
+  },
+  methods: {
+    totalConnections() {
+      this.$socket.emit("get connections");
+    },
+  },
+};
 </script>
 
 <style>

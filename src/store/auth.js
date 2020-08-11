@@ -8,12 +8,22 @@ export default {
     }),
 
     getters: {
+        isLoggedIn(state) {
+            if (!state.user) {
+                return false
+            } else {
+                return true
+            }
+        },
+
         user(state) {
             return state.user;
         },
 
         username(state) {
-            return state.user.username;
+            if (state.user) {
+                return state.user.username;
+            }
         },
 
         isLoggedIn(state) {
@@ -29,6 +39,10 @@ export default {
         LOGIN(state, user) {
             state.user = user
             sessionStorage.setItem('user', JSON.stringify(user))
+        },
+
+        SET_USER(state, data) {
+            state.user = data
         },
 
         LOGOUT(state) {
@@ -63,6 +77,17 @@ export default {
                         reject(err.response.data)
                     })
             })
+        },
+
+
+        RETRIEVE_USER_DATA({ commit, dispatch }) {
+            const userData = JSON.parse(sessionStorage.getItem('user'))
+            commit('SET_USER', userData)
+
+            Promise.all([
+                dispatch("Room/SET_USER", userData.username, { root: true }),
+                dispatch("Room/FETCH_ROOM_DATA", userData.rooms, { root: true })
+            ])
         },
 
         LOGOUT({ commit }) {

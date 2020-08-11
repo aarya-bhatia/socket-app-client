@@ -10,7 +10,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    api: 'https://sleepy-peak-50290.herokuapp.com',
+    //api: 'https://sleepy-peak-50290.herokuapp.com',
+    api: 'http://localhost:3000',
     connected: false
   },
 
@@ -32,7 +33,11 @@ export default new Vuex.Store({
     SOCKET_connect({ state }) {
       state.connected = true
       console.log("socket connected");
-    }
+    },
+
+    SOCKET_TOTAL_CONNECTIONS(context, data) {
+      console.log("total connections -> ", data);
+    },
   },
 
   modules: {

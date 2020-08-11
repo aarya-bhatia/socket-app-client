@@ -11,5 +11,11 @@ export default {
   beforeCreate() {
     store.dispatch("Auth/LOGOUT");
   },
+
+  mounted() {
+    setTimeout(() => {
+      this.$router.push({ name: "Login" });
+    }, 500);
+  },
 };
 </script>

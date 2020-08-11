@@ -4,6 +4,9 @@
       <div class="indeterminate"></div>
     </div>
 
+    <h5>Active Users</h5>
+    <p v-for="(user,i) in active" :key="i">{{ user }}</p>
+
     <!-- chat messages -->
     <h4>{{ roomTitle }}</h4>
     <div class="card-panel">
@@ -88,6 +91,7 @@ export default {
       messages: "Room/messages",
       roomName: "Room/roomName",
       user: "Room/user",
+      active: "Room/active",
     }),
 
     typingStackLength() {

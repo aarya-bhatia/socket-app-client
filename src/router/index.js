@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store'
 
 import Login from '@/components/Login'
 import Logout from '@/components/Logout'
@@ -45,7 +46,15 @@ const routes = [
     path: '/chat/:roomTitle',
     name: 'Chat',
     component: Chat,
-    props: true
+    props: true,
+    beforeEnter: (to, from, next) => {
+      console.log(`${from} --> ${to}`)
+      if (!store.getters['Room/joinedRoom']) {
+        next({ name: 'ListRooms' })
+      } else {
+        next()
+      }
+    }
   }
 ]
 

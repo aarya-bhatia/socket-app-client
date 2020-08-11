@@ -8,7 +8,8 @@ export default {
         roomName: "",
         joinedRoom: false,
         messages: [],
-        rooms: []
+        rooms: [],
+        active: []
     },
 
     getters: {
@@ -31,6 +32,10 @@ export default {
 
         roomName(state) {
             return state.roomName;
+        },
+
+        active(state) {
+            return state.active
         }
     },
 
@@ -45,6 +50,7 @@ export default {
             state.roomName = ""
             state.joinedRoom = false
             state.messages = []
+            state.active = []
         },
 
         NEW_MESSAGE(state, data) {
@@ -59,11 +65,19 @@ export default {
             state.user = user
         },
 
+        SET_ACTIVE_USERS(state, data) {
+            state.active = data
+        },
+
         RECIEVE_MESSAGES(state, messages) {
             state.messages = messages.reverse()
         },
 
         CREATE_ROOM(state, room) {
+            state.rooms.push(room)
+        },
+
+        ADD_ROOM(state, room) {
             state.rooms.push(room)
         }
     },
@@ -89,6 +103,18 @@ export default {
 
         SOCKET_NEW_MESSAGE({ commit }, message) {
             commit('NEW_MESSAGE', message)
+        },
+
+        SOCKET_NEW_ROOM({ getters, commit }, room) {
+            if (room.members.includes(getters.user)) {
+                commit('ADD_ROOM', room)
+            } else {
+                console.log(getters.username + ' is not a member of this room!')
+            }
+        },
+
+        SOCKET_USER_STATUS({ commit }, data) {
+            commit('SET_ACTIVE_USERS', data)
         },
 
         JOIN_ROOM({ commit }, data) {
